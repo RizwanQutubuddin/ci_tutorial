@@ -8,19 +8,16 @@
 </head>
 <body>
     <h1><?= $title?></h1>
+
     <h2>Welcome Index page</h2>
     <ul>
-    <?php 
-    foreach ($users as $user) {?>
-        <li><?=$user?></li>
-    <?php } ?>
+        <?php foreach ($users as $user) {?>
+            <li><?=$user?></li>
+        <?php } ?>
     </ul>
 
     <h3><?php echo base_url() ?></h3>
     <h4><?= anchor('user/signup','Sign Up')?></h4>
-    <h5><?php echo $this->session->userdata('name');?>
-    <h5><?php echo $this->session->flashdata('email');?>
-    <h5><?php echo $this->session->flashdata('phone');?>
-    <h5><?php echo $this->session->userdata('phone');?>
+
 </body>
 </html>
