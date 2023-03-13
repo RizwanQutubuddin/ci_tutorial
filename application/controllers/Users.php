@@ -34,6 +34,9 @@ class Users extends CI_Controller
 
     public function login()
     {
-        $this->load->view('users/login');
+        $data['title'] = "Login";
+        $this->load->view('header', $data);
+        $this->load->view('users/login',$data);
+        $this->load->view('footer',$data);
     }
 }

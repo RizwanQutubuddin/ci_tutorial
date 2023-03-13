@@ -7,7 +7,8 @@
     <title>Login</title>
 </head>
 <body>
-    <h1>Login</h1>
+    <h1><?php echo $title?></h1>
+    <p><?php echo $this->session->flashdata('message')?></p>
     
 </body>
 </html>
