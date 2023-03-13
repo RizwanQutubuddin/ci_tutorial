@@ -12,6 +12,9 @@ class Users extends CI_Controller
 
     public function signup()
     {
+        if ($this->session->userdata('authenticated')) {
+            redirect('dashboard');
+        }
         $this->form_validation->set_rules('first_name', 'First Name', 'trim|required');
         $this->form_validation->set_rules('email', 'email', 'trim|required|valid_email|is_unique[users.email]');
         $this->form_validation->set_rules('password', 'Password', 'required');
@@ -34,9 +37,36 @@ class Users extends CI_Controller
 
     public function login()
     {
-        $data['title'] = "Login";
-        $this->load->view('header', $data);
-        $this->load->view('users/login',$data);
-        $this->load->view('footer',$data);
+        if ($this->session->userdata('authenticated')) {
+            redirect('dashboard');
+        }
+        $this->form_validation->set_rules('email', 'email', 'trim|required|valid_email');
+        $this->form_validation->set_rules('password', 'Password', 'required');
+
+        $this->form_validation->set_error_delimiters('<div class="error">', '</div>');
+
+        if($this->form_validation->run()==false){
+            $data['title'] = "Login";
+            $this->load->view('header', $data);
+            $this->load->view('users/login',$data);
+            $this->load->view('footer',$data);
+        } else {
+            $email = $this->security->xss_clean($this->input->post('email'));
+            $password = $this->security->xss_clean($this->input->post('password'));
+            $user = $this->users_model->login($email, $password);
+            if ($user) {
+                $userData = array('id' => $user["id"], 'first_name' => $user["first_name"], 'last_name' => $user["last_name"], 'email' => $user["email"], 'authenticated' => TRUE);
+                $this->session->set_userdata($userData);
+                redirect('dashboard');
+            } else {
+                $this->session->set_flashdata('message', 'Email or Password is incorrect');
+                redirect('users/login');
+            }
+        }
+    }
+    public function logout()
+    {
+        $this->session->sess_destroy();
+        redirect('users/login');
     }
 }

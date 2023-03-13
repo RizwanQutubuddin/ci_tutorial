@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $title?></title>
-    <link href="<?php echo base_url().'assets/css/bootstrap.min.css'?>" rel='stylesheet'/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel='stylesheet'/>
 </head>
 <body>
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
@@ -26,16 +26,25 @@
                 <?php echo anchor('pages/view/contact','Contact',array('class' => 'nav-link'))?>
             </li>
         </ul>
-        <form class="d-flex">
-            <input class="form-control me-2" type="text" placeholder="Search">
-            <button class="btn btn-primary" type="button">Search</button>
-        </form>
+        <ul class="navbar-nav me-2">
+            <?php if($this->session->userdata('authenticated')){?>
+                <li class="nav-item">
+                    <?php echo anchor('users/logout','Logout',array('class' => 'nav-link'))?>
+                </li>
+            <?php }else{?>
+                <li class="nav-item">
+                    <?php echo anchor('users/login','Login',array('class' => 'nav-link'))?>
+                </li>
+                <li class="nav-item">
+                    <?php echo anchor('users/signup','Signup',array('class' => 'nav-link'))?>
+                </li>
+            <?php }?>
+
+            
+            
+        </ul>
+       
     </div>
   </div>
 </nav>
-
-<div class="container-fluid mt-3">
-  <h3>Navbar Forms</h3>
-  <p>You can also include forms inside the navigation bar.</p>
-</div>
 
