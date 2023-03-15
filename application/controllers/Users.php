@@ -10,6 +10,12 @@ class Users extends CI_Controller
         $this->load->model('users_model');
     }
 
+    private function logged_in()
+    {
+        if (!$this->session->userdata('authenticated')) {
+            redirect('users/login');
+        }
+    }
     public function signup()
     {
         if ($this->session->userdata('authenticated')) {
@@ -54,8 +60,9 @@ class Users extends CI_Controller
             $email = $this->security->xss_clean($this->input->post('email'));
             $password = $this->security->xss_clean($this->input->post('password'));
             $user = $this->users_model->login($email, $password);
+
             if ($user) {
-                $userData = array('id' => $user["id"], 'first_name' => $user["first_name"], 'last_name' => $user["last_name"], 'email' => $user["email"], 'authenticated' => TRUE);
+                $userData = array('id' => $user->id, 'first_name' => $user->first_name, 'last_name' => $user->last_name?$user->last_name:'', 'email' => $user->email, 'authenticated' => TRUE);
                 $this->session->set_userdata($userData);
                 redirect('dashboard');
             } else {
@@ -68,5 +75,40 @@ class Users extends CI_Controller
     {
         $this->session->sess_destroy();
         redirect('users/login');
+    }
+
+    public function upload()
+    {
+        $this->logged_in();
+        $data['title'] = "Upload";
+        $data['error'] = '';
+
+        $config['upload_path']          = './uploads/';
+        $config['allowed_types']        = 'gif|jpg|png';
+        $config['max_size']             = 1000;
+        // $config['max_width']            = 1024;
+        // $config['max_height']           = 768;
+
+        $this->load->library('upload', $config);
+
+        if ( ! $this->upload->do_upload('userImage')){
+            $data['error'] = $this->upload->display_errors();
+            $this->load->view('header', $data);
+            $this->load->view('users/upload',$data);
+            $this->load->view('footer',$data);
+        } else {
+
+            $upload_data = $this->upload->data();
+            $user_id=$this->session->userdata('id');
+            $user = $this->users_model->get_user($user_id); //get the user detail by id
+            if ($user->profile_photo && file_exists('uploads/' . $user->profile_photo)) {   //exist a file in location
+                unlink('uploads/' . $user->profile_photo); // delete file from the location
+            }
+            $fileName=$upload_data['file_name'];
+            $userdata = ['profile_photo' => $fileName];
+            $this->users_model->update($user_id, $userdata);
+            $this->session->flashdata('message', 'Uploaded successfully');
+            redirect('dashboard');
+        }
     }
 }

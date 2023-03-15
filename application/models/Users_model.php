@@ -21,9 +21,27 @@ class Users_model extends CI_Model{
         $query=$this->db->get('users');
 
         if ($query->num_rows() > 0) {
-            return $query->result_array();
+            return $query->row(); // return result in object form
+            // return $query->result(); // return result in object array form
+            // return $query->result_array(); //return result in array form
         } else {
             return false;
         }
+    }
+    
+    public function get_user($id)
+    {
+        $this->db->where('id', $id);
+        $query = $this->db->get('users');
+        // echo "<pre>";
+        // print_r($query->row());
+        // die;
+        return $query->row();
+    }
+
+    public function update($id,$fileName)
+    {
+        $this->db->where('id', $id);
+        $this->db->update('users',$fileName);
     }
 }

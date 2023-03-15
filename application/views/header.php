@@ -9,7 +9,7 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-  <div class="container-fluid">
+  <div class="container">
     <a class="navbar-brand" href="javascript:void(0)">Logo</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
       <span class="navbar-toggler-icon"></span>
@@ -26,10 +26,19 @@
                 <?php echo anchor('pages/view/contact','Contact',array('class' => 'nav-link'))?>
             </li>
         </ul>
-        <ul class="navbar-nav me-2">
+
+
+        <ul class="navbar-nav">
+        
             <?php if($this->session->userdata('authenticated')){?>
-                <li class="nav-item">
-                    <?php echo anchor('users/logout','Logout',array('class' => 'nav-link'))?>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><?php echo ucfirst($this->session->userdata('first_name'))?></a>
+                    <ul class="dropdown-menu">
+                    
+                        <li><?php echo anchor('users/upload','Change Image',array('class' => 'dropdown-item'))?></li>
+                        <li><a class="dropdown-item" href="#">Change Password</a></li>
+                        <li><?php echo anchor('users/logout','Logout',array('class' => 'dropdown-item'))?></li>
+                    </ul>
                 </li>
             <?php }else{?>
                 <li class="nav-item">
@@ -39,11 +48,9 @@
                     <?php echo anchor('users/signup','Signup',array('class' => 'nav-link'))?>
                 </li>
             <?php }?>
-
-            
             
         </ul>
-       
+        
     </div>
   </div>
 </nav>
